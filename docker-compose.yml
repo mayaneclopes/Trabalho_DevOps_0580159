@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  flask_app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile_flask
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mariadb
+    environment:
+      - FLASK_ENV=development
+      - MYSQL_HOST=mariadb
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=school_db
+      - MYSQL_USER=flask_user
+      - MYSQL_PASSWORD=flask_password
+    networks:
+      - devops_network
+
+  mariadb:
+    build:
+      context: ./mariadb
+      dockerfile: dockerfile_mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: school_db
+      MYSQL_USER: flask_user
+      MYSQL_PASSWORD: flask_password
+    ports:
+      - "3306:3306"
+    networks:
+      - devops_network
+
+networks:
+  devops_network:
+    driver: bridge
+
