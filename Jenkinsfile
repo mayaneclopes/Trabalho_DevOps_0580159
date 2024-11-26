@@ -2,6 +2,25 @@ pipeline {
     agent any
 
     stages {
+        stage('Verificar Ambiente') {
+            steps {
+                sh 'which pytest'
+                sh 'which docker'
+            }
+        }
+
+        stage('Instalar Docker') {
+            steps {
+                sh 'apt-get update && apt-get install -y docker.io'
+            }
+        }
+
+        stage('Instalar Dependências Python') {
+            steps {
+                sh 'pip install pytest'
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/mayaneclopes/Trabalho_DevOps_0580159.git'
@@ -10,13 +29,6 @@ pipeline {
 
         stage('Rodar Testes') {
             steps {
-                sh 'python3 -m venv venv'  
-                sh 'source venv/bin/activate'  
-
-
-                sh 'pip install pytest'
-
-
                 sh 'pytest'
             }
         }
