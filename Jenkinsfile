@@ -5,7 +5,7 @@ pipeline {
         stage('Verificar Ambiente') {
             steps {
                 script {
-                    if (!fileExists('requirements.txt')) {
+                    if (!fileExists('app/requirements.txt')) {
                         error "requirements.txt não encontrado."
                     }
                     sh 'python3 --version'
