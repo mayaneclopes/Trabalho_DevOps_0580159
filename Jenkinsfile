@@ -4,6 +4,10 @@ pipeline {
     stages {
         stage('Verificar Ambiente') {
             steps {
+                script {
+                    if (!fileExists('requirements.txt')) {
+                        error "requirements.txt não encontrado."
+                    }
                     sh 'python3 --version'
                     sh 'pip3 --version'
                 }
