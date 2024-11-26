@@ -4,12 +4,19 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/mayaneclopes/Trabalho_DevOps_0580159.git'
+                git 'https://github.com/mayaneclopes/Trabalho_DevOps_0580159.git'
             }
         }
 
         stage('Rodar Testes') {
             steps {
+                sh 'python3 -m venv venv'  
+                sh 'source venv/bin/activate'  
+
+
+                sh 'pip install pytest'
+
+
                 sh 'pytest'
             }
         }
