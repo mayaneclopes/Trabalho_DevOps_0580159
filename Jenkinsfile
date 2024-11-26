@@ -18,11 +18,6 @@ stage('Instalar Dependências') {
         sh 'pip3 install pytest'
     }
 }
-        stage('Rodar Testes') {
-            steps {
-                sh 'pytest'
-            }
-        }
 
 stage('Rodar Testes') {
     steps {
