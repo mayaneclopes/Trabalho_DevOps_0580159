@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'mayaneclopes/nome_da_imagem:latest'
+    }
+
     stages {
         stage('Verificar Ambiente') {
             steps {
@@ -38,13 +42,11 @@ pipeline {
                     echo "Realizando login no Docker Hub..."
                     withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
                         echo "Iniciando o build da imagem Docker..."
-                        sh 'docker build -t nome_da_imagem -f app/Dockerfile_flask .'
+                        sh "docker build -t ${IMAGE_NAME} -f app/Dockerfile_flask ."
 
                         echo "Imagem Docker construída com sucesso. Empurrando para o Docker Hub..."
-                        sh 'docker push nome_da_imagem'
+                        sh "docker push ${IMAGE_NAME}"
 
-                        echo "Rodando a aplicação em um contêiner Docker..."
-                        sh 'docker run -d -p 5000:5000 nome_da_imagem'
                     }
                 }
             }
