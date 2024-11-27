@@ -25,6 +25,23 @@ pipeline {
                 sh 'pip install -r app/requirements.txt'
             }
         }
+
+        stage('Rodar Testes') {
+            steps {
+                sh 'pytest --maxfail=1 --disable-warnings -q'
+            }
+        }
+
+        stage('Build e Deploy') {
+            steps {
+                script {
+                    sh 'docker build -t nome_da_imagem .'
+                     sh 'docker push nome_da_imagem'
+
+                    sh 'docker run -d -p 5000:5000 nome_da_imagem'
+                }
+            }
+        }
     }
 
     post {
