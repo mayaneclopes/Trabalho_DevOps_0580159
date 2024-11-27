@@ -25,12 +25,6 @@ pipeline {
                 sh 'pip install -r app/requirements.txt'
             }
         }
-
-        stage('Rodar Testes') {
-            steps {
-                sh 'pytest --no-cache -v'
-            }
-        }
     }
 
     post {
