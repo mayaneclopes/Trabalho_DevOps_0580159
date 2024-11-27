@@ -40,14 +40,14 @@ pipeline {
             steps {
                 script {
                     echo "Realizando login no Docker Hub..."
-                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
-                        echo "Iniciando o build da imagem Docker..."
-                        sh "docker build -t ${IMAGE_NAME} -f app/Dockerfile_flask ."
-
-                        echo "Imagem Docker construída com sucesso. Empurrando para o Docker Hub..."
-                        sh "docker push ${IMAGE_NAME}"
-
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     }
+                    echo "Iniciando o build da imagem Docker..."
+                    sh "docker build -t ${IMAGE_NAME} -f app/Dockerfile_flask ."
+
+                    echo "Imagem Docker construída com sucesso. Empurrando para o Docker Hub..."
+                    sh "docker push ${IMAGE_NAME}"
                 }
             }
         }
