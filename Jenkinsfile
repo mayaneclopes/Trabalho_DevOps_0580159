@@ -13,7 +13,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Clonar Repositório') {
             steps {
                 git branch: 'main', url: 'https://github.com/mayaneclopes/Trabalho_DevOps_0580159.git'
@@ -35,12 +35,17 @@ pipeline {
         stage('Build e Deploy') {
             steps {
                 script {
+                    echo "Realizando login no Docker Hub..."
                     withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
+                        echo "Iniciando o build da imagem Docker..."
                         sh 'docker build -t nome_da_imagem -f app/Dockerfile_flask .'
-                        sh 'docker push nome_da_imagem'
-                    }
 
-                    sh 'docker run -d -p 5000:5000 nome_da_imagem'
+                        echo "Imagem Docker construída com sucesso. Empurrando para o Docker Hub..."
+                        sh 'docker push nome_da_imagem'
+
+                        echo "Rodando a aplicação em um contêiner Docker..."
+                        sh 'docker run -d -p 5000:5000 nome_da_imagem'
+                    }
                 }
             }
         }
