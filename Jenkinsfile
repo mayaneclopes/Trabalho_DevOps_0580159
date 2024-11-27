@@ -35,8 +35,10 @@ pipeline {
         stage('Build e Deploy') {
             steps {
                 script {
-                    sh 'docker build -t nome_da_imagem -f app/Dockerfile_flask .'
-                     sh 'docker push nome_da_imagem'
+                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
+                        sh 'docker build -t nome_da_imagem -f app/Dockerfile_flask .'
+                        sh 'docker push nome_da_imagem'
+                    }
 
                     sh 'docker run -d -p 5000:5000 nome_da_imagem'
                 }
