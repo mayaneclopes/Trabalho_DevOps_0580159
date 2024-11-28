@@ -15,7 +15,6 @@ def cadastrar_aluno():
     nome = request.form['nome']
     ra = request.form['ra']
     novo_aluno = Aluno(nome=nome, ra=ra)
-    
     try:
         db.session.add(novo_aluno)
         db.session.commit()
@@ -23,3 +22,11 @@ def cadastrar_aluno():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": str(e)}), 500
+
+@app.route('/metrics')
+def metrics():
+    return 'Métricas:'
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
+
