@@ -1,12 +1,20 @@
 pipeline {
     agent any
 
-    environment {
-        PATH = "/usr/local/bin:$PATH"
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Verificar Ambiente') {
+            steps {
+                script {
+                    if (!fileExists('requirements.txt')) {
+                        error "requirements.txt não encontrado."
+                    }
+                    sh 'python3 --version'
+                    sh 'pip3 --version'
+                }
+            }
+        }
+        
+        stage('Clonar Repositório') {
             steps {
                 git branch: 'main', url: 'https://github.com/mayaneclopes/Trabalho_DevOps_0580159.git'
             }
@@ -14,29 +22,22 @@ pipeline {
 
         stage('Instalar Dependências') {
             steps {
-                sh 'apt-get update && apt-get install -y python3 python3-pip python3-venv docker.io'
-                sh 'pip3 install pytest'
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Rodar Testes') {
             steps {
-                sh 'pytest -v'
-            }
-        }
-
-        stage('Build e Deploy') {
-            steps {
-                sh 'docker build -t sua-imagem .'
-                sh 'docker run -d -p 8080:8080 sua-imagem'
+                sh 'pytest --no-cache -v'
             }
         }
     }
 
     post {
         always {
-            echo 'Pipeline finalizada'
+            cleanWs()
         }
     }
 }
+
 
